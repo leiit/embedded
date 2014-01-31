@@ -43,7 +43,7 @@ sizedummy: $(TARGET).elf
 
 # Other Targets
 clean:
-	-$(RM) $(OBJS) $(TARGET).elf $(TARGET).hex $(TARGET).dep
+	-$(RM) $(OBJS) $(TARGET).elf $(TARGET).hex $(SRCS:%.c=%.dep)
 	-@echo ' '
 
 program: $(TARGET).hex
@@ -60,4 +60,4 @@ program_check:
 .PHONY: all clean dependents sizedummy program program_check
 .SECONDARY:
 
--include *.dep
+-include $(SRCS:%.c=%.dep)
