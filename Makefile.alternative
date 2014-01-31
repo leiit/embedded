@@ -3,12 +3,12 @@
 ################################################################################
 
 TARGET := simpleled
-SRCS := simpleled.c
+SRC := simpleled.c
 
 
 
 RM := rm -rf
-OBJS := $(SRCS:%.c=%.o)
+OBJS := $(SRC:%.c=%.o)
 
 
 # All Target
@@ -43,7 +43,7 @@ sizedummy: $(TARGET).elf
 
 # Other Targets
 clean:
-	-$(RM) $(OBJS) $(TARGET).elf $(TARGET).hex $(SRCS:%.c=%.dep)
+	-$(RM) $(OBJS) $(TARGET).elf $(TARGET).hex $(SRC:%.c=%.dep)
 	-@echo ' '
 
 program: $(TARGET).hex
@@ -60,4 +60,4 @@ program_check:
 .PHONY: all clean dependents sizedummy program program_check
 .SECONDARY:
 
--include $(SRCS:%.c=%.dep)
+-include $(SRC:%.c=%.dep)
