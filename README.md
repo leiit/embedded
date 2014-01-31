@@ -67,6 +67,7 @@ command | description
 `make` | runs `make build`
 `make build` | compiles and links your source files
 `make clean` | removes all build files (created by above command)
+`make program_check` | validate that avr device is connected and is programmable
 `make program` | program the AVR board (remember to connect the usb cable first)
 `make help` | yaamake's help message about these commands and variables to be defined in `Makefile`
 `make listen` | can be used to open serial listener (can be used to listen serial bytes send from your avr program. For that you need to implement USART functions. google `avr usart`)
@@ -99,6 +100,7 @@ command | description
 --: | ---
 `make` | compiles and links your source files
 `make clean` | removes all build files (created by above command)
+`make program_check` | validate that avr device is connected and is programmable
 `make program` | program the AVR board (remember to connect the usb cable first)
 `make sizedummy` | prints some size statistics of your binary
 
