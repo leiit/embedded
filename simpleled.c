@@ -18,7 +18,7 @@
 
 /* following 2 lines are needed only when _delay_ms is needed
  * read the comment about _delay_ms from the main function */
-#define __DELAY_BACKWARD_COMPATIBLE__ 1 /* This fixes an error with yaamake's avr-gcc flags */
+#define __DELAY_BACKWARD_COMPATIBLE__ 1 /* Workaround for Ubuntu precise's avr-libc bug */
 #include <util/delay.h> /* function _delay_ms */
 
 
