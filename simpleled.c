@@ -16,10 +16,9 @@
 #include <inttypes.h> /* definitions for uint8_t and others */
 #include <avr/io.h>   /* definitions for all PORT* and other registers. You absolutely will need this one */
 
-/* following 2 lines are needed only when _delay_ms is needed
+/* following line is needed only when _delay_ms is used
  * read the comment about _delay_ms from the main function */
-#define __DELAY_BACKWARD_COMPATIBLE__ 1 /* Workaround for Ubuntu precise's avr-libc bug */
-#include <util/delay.h> /* function _delay_ms */
+#include <util/delay.h>
 
 
 /* It is common to write following kind of definitions
