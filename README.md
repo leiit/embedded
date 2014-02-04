@@ -1,15 +1,15 @@
 An example to get you started with pre-project
 ==============================================
 
-This repository is for you to get started. Refer noppa and course wiki (link in noppa) for more information what to do. These files are related to development environment on linux.
+This repository is for you to get started. Refer noppa and course wiki (link in noppa) for more information what to do. These files are related to development environment on Linux.
 
 
 Git
 ---
 
-Git is suggested to be used for project management. It helps you to share core on car-project state and also keeps history of code versions. Remember to tag or branch working version of your code, so when you try to demo on last day, you know which version did work.
+Git is suggested to be used for project management. It helps you to share code on car-project state and also keeps history of code versions. Remember to tag or branch working version of your code, so when you try to demo on last day, you know which version did work.
 
-You can click `Fork` on [home page](/t-106-5300/example) to fork this project and use this gitlab as git remote. Alternatively you can press [Download](/t-106-5300/example/repository/archive) to get these files.
+You can click `Fork` on [home page](/t-106-5300/example) to fork this project and use this gitlab as git remote. Alternatively you can press [Download](/t-106-5300/example/repository/archive) to get a copy of these files.
 
 For more help with git, use the google...
 
@@ -17,18 +17,18 @@ For more help with git, use the google...
 Requirements
 ------------
 
-All these requirements are fulfilled in exercise lab, so you can skip this part there.
+All these development tool requirements are fulfilled in exercise lab, so you can skip this part if you are working there.
 
-On Windows you need to refer wiki for help. Course assistance do not provide any help with Windows tools or development environments. Actual coding is the same, thus help is provided for that.
+On Windows you need to refer the course wiki for help. Course assistance do not provide any help with Windows tools or development environments. Actual coding on Windows is similar, thus help is provided for that.
 
-With linux based systems (like exercise lab computers) following packages are needed:
+With Linux based systems following packages are needed:
 
 debian & ubuntu | description
 --- | ---
 gcc-avr | Compiler and other utilities
 avr-libc | C libraries
 avrdude | Used to program the AVR device
-yaamake | Required to use `Makefile` (read more below). Packages for yaamake is not yet in distributions repositories so get it from [github source](https://github.com/raphendyr/yaamake)
+yaamake | Required to use `Makefile` (read more below). Packages for yaamake are not yet in distribution repositories so get it from [github source](https://github.com/raphendyr/yaamake)
 
 
 Files
@@ -36,23 +36,23 @@ Files
 
 ### .gitignore
 
-This file contains files to be ignored by git. These files are build result and other binary files. You shouldn't ever but this type of files in git.
+This file contains files to be ignored by git. These files contain build result and other binary files. You should not put this type of files in git.
 
 ### Makefile
 
-`Makefile` contains definitions and rules for `make` program. We use `yaamake` to do all the heavy lifting so our `Makefile` is quite sort. Some more information and configuration variables can be show with `make help`.
+`Makefile` contains definitions and rules for the `make` program. This project uses `yaamake` to do all the heavy lifting so the `Makefile` is quite sort. More information and configuration variables can be viewed with `make help`.
 
 When you change the `simpleled.c` filename to something else or add another source file, you need to edit `SRC` line in this file.
 
 ### Makefile.alternative
 
-This another makefile is not used, but is provided as alternative. If you want to use this instead the other, then rename this to `Makefile` (overwrite the other file). If you dom't want to replace the other you could run `make -f Makefile.alternative` in place of `make`.
+This is an alternative makefile that can be used without yaamake. If you want to use this instead the former, then rename this file to `Makefile` (overwrite the other file). If you dom't want to replace the other you can run `make -f Makefile.alternative` instead of `make`.
 
-You would use this version if you don't want to or can't use yaamake or if there seems to be problem with it yaamake.
+You can use this makefile if you don't want to or can't use yaamake.
 
 ### simpleled.c
 
-Example source file to show you the most basic things. This is far from complete solution for pre-project, but works for testing the development environment.
+This is the example source file that demonstrates some basic things. This is far from a complete solution for the pre-project, but works for testing the development environment.
 
 
 Yaamake makefile usage
