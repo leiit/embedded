@@ -107,7 +107,7 @@ int main(void)
 		 * This example is another ok purpose for it (as blinkid the led
 		 * is only thing we do)
 		 */
-		_delay_ms(200);
+		_delay_ms(200); /* delay code execution for 200 ms */
 
 		/* Write 0 to leds port register in other leds pin,
 		 * this will turn other led off
