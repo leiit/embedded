@@ -3,13 +3,13 @@
  * single pins (leds in example) and how to change state
  * of multiple pins at once.
  *
- * This example contains also a lot of comments so you should
- * learn a bit hints how to write C code on AVR.
+ * This example contains a lot of comments so that you can
+ * get hints on how to write C code for AVR.
  * Note also that this file is overly commented and you
- * should not commend every single line on your code.
+ * should not comment every single line on your code.
  *
- * This file tries to teach everyone the basics and also contains
- * some optimization hints to those who have used to write C.
+ * This file goes through the basics and also contains
+ * some optimization hints to those who are used to writing C.
  */
 
 /* As you should know, these are the include statements */
@@ -42,7 +42,7 @@
 
 
 /* For setting up the initial values for the registers
- * it's sometimes good to use helper functions (gcc will optimise
+ * it is sometimes good to use helper functions (gcc will optimise
  * these function calls away (inlines them) so not overhead is generated)
  * This is very nice at least when your code is in multiple files
  */
@@ -74,7 +74,7 @@ int main(void)
 	setup_leds();
 
 	/* Variables defined here are bit faster than global
-	 * variables. Sometimes it's far more better for the
+	 * variables. Sometimes it's better for the
 	 * code readability to us global variables instead.
 	 */
 	uint8_t state = 0x80;
