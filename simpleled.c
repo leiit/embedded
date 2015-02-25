@@ -31,9 +31,8 @@
 #define BLINK_LED PC2
 #define OTHER_LED PC0
 
-int ignore = 0;
+volatile int ignore = 0;
 int loops = 6500;
-volatile int timercounter = 0;
 
 void setup_leds(void)
 {
@@ -49,108 +48,89 @@ void setup_switches(void)
 	SWITCH_DDR = 0x0;
 }
 
+void setup_timer(void) {
+  TCCR2B |= (1 << WGM22) | (1 << CS20) | (1 << CS21);
+  TIMSK2 |= (1 << OCIE2A);
+  OCR2A = 254;
+}
 
-/* Remember that in C you need to prototype functions,
- * when they are referenced before defined.
- * It is good practice to prototype all used functions in start of the file
- */
+void change_pwm_signal(int ratio) {
+  DDRB = 0xff;
+  TCCR1A |= (1 << COM1A0) | (1 << COM1A1) | (1 << WGM11);
+  TCCR1B |= (1 << CS10) | (1 << CS11) | (1 << WGM12) | (1 << WGM13);
+  ICR1 = 4999;
+  OCR1A = ICR1 - 300 - ratio;
+}
+
 uint8_t rotate_online_led(uint8_t);
 void toggle_blink_led(void);
 void toggle_led(void);
 uint8_t get_switch_status(void);
 
-
 int main(void)
 {
-	/* In start of the main function you would do
-	 * Hardware setup/initialization as main function
-	 * is run only once after microcontroller is started
-	 */
-
 	uint8_t switch_state;
 	setup_leds();
 	setup_switches();
+	setup_timer();
+	sei();
 
 	for (;;)
 	{
 		switch_state = ~SWITCH_PIN;
-		if (ignore != 0 && switch_state > 0) {
-			//ignore = 1;
+		if (ignore == 0 && switch_state > 0) {
+			ignore = 1;
 			LEDS_PORT = switch_state;
+			TCNT2 = 0;
+			switch_pwm(switch_state);
 		}
 	}
 
-	/* when you exit from the main function, the MCU will enter
-	 * an infinite loop (note. the MCU is not rebooted)
-	 * Normally you code should never exit the main function.
-	 */
 	return 0;
 }
 
 
-uint8_t rotate_online_led(uint8_t state)
-{
-	/* Following commented line would be optimal for this
-	 * function, but it would broke toggle_blink_led
-	 * so we need to do bit more complex way, but this
-	 * shows you bit more what you could do
-	 */
-	// LEDS_PORT = state;
+void switch_pwm(uint8_t state) {
 
-	/* Read the current port value (this is different than
-	 * what you need for reading button state)
-	 */
-	uint8_t current_value = LEDS_PORT;
-	/* mask the pins we control to be off */
-	current_value &= 0x0f; /* 0b00001111 */
-	/* put the state pin up */
-	current_value |= state;
-	/* update port register (online led will change after this line) */
-	LEDS_PORT = current_value;
-
-	/* Above could be written with just single line of code */
-	// LEDS_PORT = (LEDS_PORT & 0x0f) | state;
-
-	/* Update the state byte */
-	state >>= 1;
-	if (state <= 0x08) /* 0b00001000 */
-		state = 0x80;  /* 0b10000000 */
-	return state;
+  switch (state) {
+  case 0b00000001:
+    change_pwm_signal(12);
+    break;
+  case 0b00000010:
+    change_pwm_signal(25);
+    break;
+  case 0b00000100:
+    change_pwm_signal(37);
+    break;
+  case 0b00001000:
+    change_pwm_signal(50);
+    break;
+  case 0b00010000:
+    change_pwm_signal(62);
+    break;
+  case 0b00100000:
+    change_pwm_signal(75);
+    break;
+  case 0b01000000:
+    change_pwm_signal(87);
+    break;
+  case 0b10000000:
+    change_pwm_signal(100);
+    break;
+  default:
+    change_pwm_signal(0);
+    break;
+  }
 }
 
-void toggle_led(void) {
-	LEDS_PIN = SWITCH_PIN;
-}
+volatile int counter = 0;
 
-uint8_t poll_switch_status(void) {
-	status = SWITCH_PORT;
-
-	switch ()
-
-}
-
-ISR()
-
-
-void toggle_blink_led(void)
-{
-	/* There is no easy way to pass register to a function
-	 * in a way that would be optimal.
-	 * When you are passing register to the function,
-	 * you are trying to do too generic code for this task.
-	 * You should avoid this during this exercise.
-	 *
-	 * Instead hard code registers into the functions
-	 * and use C macros to help change the code.
-	 */
-
-	/* Most atmega MCU can toggle output state when 1 is
-	 * written to the PIN* register */
-	LEDS_PIN |= _BV(BLINK_LED);
-
-	/* _BV is macro defined in avr/io.h
-	 *    #define _BV(bit) (1 << (bit))
-	 * so above is identical to
-	 */
-	// LEDS_PIN |= 1 << BLINK_LED;
+ISR(TIMER2_COMPA_vect) {
+  if (counter == 7000) {
+    ignore = 0;
+    LEDS_PORT = 0;
+    counter = 0;
+    TCCR1A &= ~_BV(COM1A1);
+  }
+  counter++;
 }
