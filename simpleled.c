@@ -12,40 +12,29 @@
  * some optimization hints to those who are used to writing C.
  */
 
-/* As you should know, these are the include statements */
 #include <inttypes.h> /* definitions for uint8_t and others */
 #include <avr/io.h>   /* definitions for all PORT* and other registers. You absolutely will need this one */
 
 /* following line is needed only when _delay_ms is used
  * read the comment about _delay_ms from the main function */
 #include <util/delay.h>
+#include <avr/interrupt.h>
 
+#define LEDS_PORT PORTC // 8b 3r / napa
+#define LEDS_DDR  DDRC // data direction reg
+#define LEDS_PIN  PINC // port input
 
-/* It is common to write following kind of definitions
- * so when your hardware or wiring changes, you just need to edit these.
- * Of course this isn't the case with this project as you are not allowed
- * to change the hardware.
- * Any case it makes reading the code easier (if you choose good variables)
- */
-#define LEDS_PORT PORTC
-#define LEDS_DDR  DDRC
-#define LEDS_PIN  PINC
+#define SWITCH_PORT PORTA
+#define SWITCH_DDR	DDRA
+#define SWITCH_PIN	PINA
 
-
-/* you should use macros instead of integer literals
- * when addressing pins (even though PC2 is always 2)
- * This is also good in the documentation perspective as
- * we can differentiate between PC2 and PE2
- */
 #define BLINK_LED PC2
 #define OTHER_LED PC0
 
+int ignore = 0;
+int loops = 6500;
+volatile int timercounter = 0;
 
-/* For setting up the initial values for the registers
- * it is sometimes good to use helper functions (gcc will optimise
- * these function calls away (inlines them) so not overhead is generated)
- * This is very nice at least when your code is in multiple files
- */
 void setup_leds(void)
 {
 	/* Configure the leds port as output
@@ -55,6 +44,11 @@ void setup_leds(void)
 	LEDS_DDR = 0xff;
 }
 
+void setup_switches(void)
+{
+	SWITCH_DDR = 0x0;
+}
+
 
 /* Remember that in C you need to prototype functions,
  * when they are referenced before defined.
@@ -62,6 +56,8 @@ void setup_leds(void)
  */
 uint8_t rotate_online_led(uint8_t);
 void toggle_blink_led(void);
+void toggle_led(void);
+uint8_t get_switch_status(void);
 
 
 int main(void)
@@ -71,51 +67,17 @@ int main(void)
 	 * is run only once after microcontroller is started
 	 */
 
+	uint8_t switch_state;
 	setup_leds();
-
-	/* Variables defined here are bit faster than global
-	 * variables. Sometimes it's better for the
-	 * code readability to us global variables instead.
-	 */
-	uint8_t state = 0x80;
+	setup_switches();
 
 	for (;;)
 	{
-		/* The infinite loop of your code
-		 * All repeated logic should be here
-		 */
-
-		/* Write 1 to leds port register in other leds pin,
-		 * this will turn other led on (left most led)
-		 */
-		LEDS_PORT |= _BV(OTHER_LED);
-
-		/* call helper function to toggle led */
-		toggle_blink_led();
-
-		/* call helper function to another task */
-		state = rotate_online_led(state);
-
-		/* You should avoid using _delay_ms
-		 * For example using it to generate servo PWM
-		 * is invalid and wrong solution
-		 *
-		 * _delay_ms is good to be used for debuging time related
-		 * problems, but should be always replaced by some other
-		 * solution when the real problem is found.
-		 *
-		 * This example is another ok purpose for it (as blinkid the led
-		 * is only thing we do)
-		 */
-		_delay_ms(200); /* delay code execution for 200 ms */
-
-		/* Write 0 to leds port register in other leds pin,
-		 * this will turn other led off
-		 * Notice that we need to "mask wanted pin off", compiler will
-		 * translate this into single processor instruction
-		 */
-		LEDS_PORT &= ~_BV(OTHER_LED);
-		_delay_ms(200);
+		switch_state = ~SWITCH_PIN;
+		if (ignore != 0 && switch_state > 0) {
+			//ignore = 1;
+			LEDS_PORT = switch_state;
+		}
 	}
 
 	/* when you exit from the main function, the MCU will enter
@@ -155,6 +117,19 @@ uint8_t rotate_online_led(uint8_t state)
 		state = 0x80;  /* 0b10000000 */
 	return state;
 }
+
+void toggle_led(void) {
+	LEDS_PIN = SWITCH_PIN;
+}
+
+uint8_t poll_switch_status(void) {
+	status = SWITCH_PORT;
+
+	switch ()
+
+}
+
+ISR()
 
 
 void toggle_blink_led(void)
