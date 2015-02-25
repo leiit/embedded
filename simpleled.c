@@ -126,7 +126,7 @@ void switch_pwm(uint8_t state) {
 volatile int counter = 0;
 
 ISR(TIMER2_COMPA_vect) {
-  if (counter == 7000) {
+  if (counter > 7000) {
     ignore = 0;
     LEDS_PORT = 0;
     counter = 0;
